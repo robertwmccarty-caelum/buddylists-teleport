@@ -1,0 +1,38 @@
+{
+  "name": "buddylists-teleport",
+  "version": "0.2.0",
+  "description": "Optional diagnostic, offline receipt verifier, and conformance harness for the BuddyLists remote MCP URL. The install is the URL, not this package.",
+  "license": "MIT",
+  "private": false,
+  "bin": {
+    "buddylists-teleport": "./bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "published-surface.json",
+    "SPEC.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "diag": "node bin/cli.js",
+    "conform": "node bin/cli.js conform",
+    "drift": "node bin/cli.js drift",
+    "dual": "node bin/cli.js dual",
+    "kit": "node bin/cli.js kit",
+    "table": "node bin/cli.js table --write"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robertwmccarty-caelum/buddylists-teleport"
+  },
+  "keywords": [
+    "mcp",
+    "buddylists",
+    "model-context-protocol"
+  ]
+}

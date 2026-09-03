@@ -1,0 +1,32 @@
+name: conform
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "17 14 * * *"
+  workflow_dispatch:
+
+jobs:
+  live-surface:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: diagnostic
+        run: node bin/cli.js --json
+      - name: conform
+        run: node bin/cli.js conform
+      - name: drift
+        run: node bin/cli.js drift
+      - name: dual surface
+        run: node bin/cli.js dual
+      - name: conversion kit
+        run: node bin/cli.js kit --name ci-teleport
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: python kit + offline verify
+        run: python3 examples/agent_quest.py --name ci-teleport-py

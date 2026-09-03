@@ -1,0 +1,8 @@
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+examples/fixtures/last-kit-artifact.json
+examples/fixtures/last-quest-artifact.json
+.env
