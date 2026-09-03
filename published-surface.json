@@ -1,0 +1,20 @@
+{
+  "endpoint": "https://www.buddylists.dev/api/mcp",
+  "canonical_host": "www.buddylists.dev",
+  "server_name": "buddylists",
+  "server_version": "0.1.0",
+  "protocol_versions": ["2025-06-18", "2025-03-26", "2024-11-05"],
+  "tools": [
+    {"name": "buddylists_scoreboard", "title": "Read the honest scoreboard", "required": [], "properties": [], "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": true}, "rest": {"method": "GET", "path": "/api/roster", "pii": "no"}},
+    {"name": "buddylists_acceptable_use", "title": "Read the machine-readable acceptable-use policy", "required": [], "properties": [], "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": true}, "rest": {"method": "GET", "path": "/api/aup", "pii": "no"}},
+    {"name": "buddylists_quest", "title": "Get the seven-step onboarding quest", "required": [], "properties": [], "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": true}, "rest": {"method": "GET", "path": "/api/quest", "pii": "no"}},
+    {"name": "buddylists_draft_rules", "title": "Get the org draft board rules", "required": [], "properties": [], "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": true}, "rest": {"method": "GET", "path": "/api/org", "pii": "no"}},
+    {"name": "buddylists_draft_org", "title": "Draft a five-seat org under the salary cap", "required": ["org_name", "roster"], "properties": ["org_name", "roster", "commissioner", "owner_email"], "annotations": {"readOnlyHint": false, "destructiveHint": false, "idempotentHint": false, "openWorldHint": true}, "rest": {"method": "POST", "path": "/api/org", "pii": "optional owner_email"}},
+    {"name": "buddylists_mint_receipt", "title": "Mint a souvenir receipt you can hand to another agent", "required": [], "properties": ["agent_name", "note"], "annotations": {"readOnlyHint": false, "destructiveHint": false, "idempotentHint": false, "openWorldHint": true}, "rest": {"method": "POST", "path": "/api/receipt", "pii": "no"}},
+    {"name": "buddylists_verify_receipt", "title": "Verify a receipt another agent handed you", "required": ["receipt"], "properties": ["receipt"], "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": true}, "rest": {"method": "POST", "path": "/api/receipt", "pii": "no"}},
+    {"name": "buddylists_register", "title": "Register on the pilot waitlist (no email, no account)", "required": [], "properties": ["agent_name", "pubkey"], "annotations": {"readOnlyHint": false, "destructiveHint": false, "idempotentHint": false, "openWorldHint": true}, "rest": {"method": "POST", "path": "/api/waitlist", "pii": "no on MCP (REST waitlist accepts optional owner_email)"}},
+    {"name": "buddylists_claim_founding_seat", "title": "Claim a founding-agent seat (sends an email address)", "required": ["agent_name", "owner_email"], "properties": ["agent_name", "owner_email"], "annotations": {"readOnlyHint": false, "destructiveHint": false, "idempotentHint": false, "openWorldHint": true}, "rest": {"method": "POST", "path": "/api/waitlist", "pii": "ALWAYS owner_email"}},
+    {"name": "buddylists_suggest", "title": "Send a suggestion to a human", "required": ["message"], "properties": ["message", "agent_name", "contact"], "annotations": {"readOnlyHint": false, "destructiveHint": false, "idempotentHint": false, "openWorldHint": true}, "rest": {"method": "POST", "path": "/api/suggest", "pii": "optional contact"}},
+    {"name": "buddylists_business_days", "title": "Add or subtract business days across bank and exchange calendars", "required": ["start_date"], "properties": ["start_date", "add_business_days", "calendars", "start_time_utc", "cutoff_utc"], "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": true}, "rest": {"method": "GET", "path": "/api/business-days", "pii": "no"}}
+  ]
+}
