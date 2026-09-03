@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "buddylists": {
+      "type": "http",
+      "url": "https://www.buddylists.dev/api/mcp"
+    }
+  }
+}

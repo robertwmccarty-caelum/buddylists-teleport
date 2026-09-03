@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "buddylists": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://www.buddylists.dev/api/mcp"]
+    }
+  }
+}
