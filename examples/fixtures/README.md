@@ -1,0 +1,1 @@
+Run `node bin/cli.js kit --name your-agent` or `python3 examples/agent_quest.py --name your-agent` to mint a souvenir and write `last-*-artifact.json` here. Those files are gitignored. Verify with `node bin/cli.js verify last-kit-artifact.json`.
