@@ -1,0 +1,1922 @@
+From 3985593041e455bb25a1056a49db99b0da9cd5df Mon Sep 17 00:00:00 2001
+From: robertwmccarty-caelum
+ <227332947+robertwmccarty-caelum@users.noreply.github.com>
+Date: Thu, 19 Nov 2026 02:25:37 +0000
+Subject: [PATCH] feat(corpora): add agent registration classification
+ candidate
+
+The 20-case candidate corpus from issue #352, unchanged from
+registration-evidence-v1.1.zip at robertwmccarty-caelum/buddylists-teleport
+commit 3ab5bdbe48d24a288759432a15482abd1bebc80d (case-file digest
+dd08fe7b6f97dc2a30b37cddd5e4d059be06683fbf4680538df59d22a1f0f0fc).
+Carried in by piiiico because the author's integration cannot open
+pull requests here.
+
+Signed-off-by: robertwmccarty-caelum <227332947+robertwmccarty-caelum@users.noreply.github.com>
+---
+ .../INDEX.md                                  |  24 ++
+ .../MANIFEST.json                             | 272 ++++++++++++++++++
+ .../README.md                                 |  29 ++
+ .../REGISTRY_ADDENDUM.toml                    |  12 +
+ .../adversarial_probe.py                      |  66 +++++
+ .../anonymous-mcp-discovery/context.json      |  19 ++
+ .../cases/anonymous-mcp-discovery/record.json |  23 ++
+ .../cases/challenge-expired/context.json      |  19 ++
+ .../cases/challenge-expired/record.json       |  23 ++
+ .../cases/challenge-replayed/context.json     |  19 ++
+ .../cases/challenge-replayed/record.json      |  23 ++
+ .../challenge-state-missing/context.json      |  18 ++
+ .../cases/challenge-state-missing/record.json |  23 ++
+ .../cases/challenge-state-null/context.json   |  19 ++
+ .../cases/challenge-state-null/record.json    |  23 ++
+ .../cases/challenge-state-text/context.json   |  19 ++
+ .../cases/challenge-state-text/record.json    |  23 ++
+ .../cases/child-agent/context.json            |  19 ++
+ .../cases/child-agent/record.json             |  23 ++
+ .../cases/consent-revoked/context.json        |  19 ++
+ .../cases/consent-revoked/record.json         |  23 ++
+ .../cases/duplicate-agent/context.json        |  19 ++
+ .../cases/duplicate-agent/record.json         |  23 ++
+ .../cases/duplicate-swarm/context.json        |  19 ++
+ .../cases/duplicate-swarm/record.json         |  23 ++
+ .../cases/forged-agent-signature/context.json |  19 ++
+ .../cases/forged-agent-signature/record.json  |  23 ++
+ .../forged-registry-receipt/context.json      |  19 ++
+ .../cases/forged-registry-receipt/record.json |  23 ++
+ .../missing-registry-receipt/context.json     |  19 ++
+ .../missing-registry-receipt/record.json      |  15 +
+ .../cases/nonce-not-issued/context.json       |  19 ++
+ .../cases/nonce-not-issued/record.json        |  23 ++
+ .../cases/quarantined-report/context.json     |  19 ++
+ .../cases/quarantined-report/record.json      |  23 ++
+ .../context.json                              |  19 ++
+ .../record.json                               |  23 ++
+ .../tampered-committed-digest/context.json    |  19 ++
+ .../tampered-committed-digest/record.json     |  23 ++
+ .../cases/valid-new-registration/context.json |  19 ++
+ .../cases/valid-new-registration/record.json  |  23 ++
+ .../cases/wrong-challenge-key/context.json    |  19 ++
+ .../cases/wrong-challenge-key/record.json     |  23 ++
+ .../cases/wrong-consent-purpose/context.json  |  19 ++
+ .../cases/wrong-consent-purpose/record.json   |  23 ++
+ .../check_vectors.py                          |  61 ++++
+ .../contract.py                               |  93 ++++++
+ .../gen_vectors.py                            | 132 +++++++++
+ 48 files changed, 1520 insertions(+)
+ create mode 100644 corpora/vectors-agent-registration-classification/INDEX.md
+ create mode 100644 corpora/vectors-agent-registration-classification/MANIFEST.json
+ create mode 100644 corpora/vectors-agent-registration-classification/README.md
+ create mode 100644 corpora/vectors-agent-registration-classification/REGISTRY_ADDENDUM.toml
+ create mode 100644 corpora/vectors-agent-registration-classification/adversarial_probe.py
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/anonymous-mcp-discovery/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/anonymous-mcp-discovery/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/challenge-expired/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/challenge-expired/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/challenge-replayed/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/challenge-replayed/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/challenge-state-missing/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/challenge-state-missing/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/challenge-state-null/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/challenge-state-null/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/challenge-state-text/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/challenge-state-text/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/child-agent/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/child-agent/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/consent-revoked/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/consent-revoked/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/duplicate-agent/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/duplicate-agent/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/duplicate-swarm/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/duplicate-swarm/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/forged-agent-signature/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/forged-agent-signature/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/forged-registry-receipt/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/forged-registry-receipt/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/missing-registry-receipt/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/missing-registry-receipt/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/nonce-not-issued/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/nonce-not-issued/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/quarantined-report/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/quarantined-report/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/signed-report-not-registration/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/signed-report-not-registration/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/tampered-committed-digest/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/tampered-committed-digest/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/valid-new-registration/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/valid-new-registration/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/wrong-challenge-key/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/wrong-challenge-key/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/wrong-consent-purpose/context.json
+ create mode 100644 corpora/vectors-agent-registration-classification/cases/wrong-consent-purpose/record.json
+ create mode 100644 corpora/vectors-agent-registration-classification/check_vectors.py
+ create mode 100644 corpora/vectors-agent-registration-classification/contract.py
+ create mode 100644 corpora/vectors-agent-registration-classification/gen_vectors.py
+
+diff --git a/corpora/vectors-agent-registration-classification/INDEX.md b/corpora/vectors-agent-registration-classification/INDEX.md
+new file mode 100644
+index 000000000..ccc2dee12
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/INDEX.md
+@@ -0,0 +1,24 @@
++# Test vector index
++
++| ID | Registration credit | Reason |
++|---|---|---|
++| valid-new-registration | true | registration_evidence_sufficient_for_fixture |
++| anonymous-mcp-discovery | false | not_registration_event |
++| signed-report-not-registration | false | not_registration_event |
++| quarantined-report | false | not_durably_committed |
++| consent-revoked | false | consent_not_affirmative |
++| wrong-consent-purpose | false | consent_scope_mismatch |
++| child-agent | false | ephemeral_or_child_agent |
++| duplicate-swarm | false | swarm_already_registered |
++| duplicate-agent | false | agent_already_registered |
++| nonce-not-issued | false | challenge_binding_mismatch |
++| challenge-expired | false | challenge_expired_or_not_yet_issued |
++| challenge-replayed | false | challenge_replayed |
++| challenge-state-missing | false | challenge_state_unverified |
++| challenge-state-null | false | challenge_state_unverified |
++| challenge-state-text | false | challenge_state_unverified |
++| wrong-challenge-key | false | challenge_key_mismatch |
++| forged-agent-signature | false | agent_proof_invalid |
++| tampered-committed-digest | false | durable_receipt_binding_mismatch |
++| forged-registry-receipt | false | durable_receipt_signature_invalid |
++| missing-registry-receipt | false | malformed_or_missing_evidence |
+diff --git a/corpora/vectors-agent-registration-classification/MANIFEST.json b/corpora/vectors-agent-registration-classification/MANIFEST.json
+new file mode 100644
+index 000000000..c33d36643
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/MANIFEST.json
+@@ -0,0 +1,272 @@
++{
++  "corpusDigest": "dd08fe7b6f97dc2a30b37cddd5e4d059be06683fbf4680538df59d22a1f0f0fc",
++  "counts": {
++    "no_registration_credit": 19,
++    "registration_credit": 1
++  },
++  "normativeScope": "BuddyLists policy proposal; MCP has no general agent registration rule",
++  "status": "candidate-not-accepted-upstream",
++  "suite": "synthetic-agent-registration-classification/v1",
++  "vectors": [
++    {
++      "difference_from_positive_control": "positive control",
++      "expected": {
++        "reason": "registration_evidence_sufficient_for_fixture",
++        "registration_credit": true
++      },
++      "files": {
++        "context.json": "70febd618cee77ace82dbc78c1b4248d36c868f20fd1cd28c59dfd820d7b8341",
++        "record.json": "bd23ec80d0f8b6c60f9d5b83ad7fe02531fc4da45693dd04743abc5e65202d68"
++      },
++      "id": "valid-new-registration",
++      "path": "cases/valid-new-registration"
++    },
++    {
++      "difference_from_positive_control": "MCP tools/list is not a registration",
++      "expected": {
++        "reason": "not_registration_event",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "70febd618cee77ace82dbc78c1b4248d36c868f20fd1cd28c59dfd820d7b8341",
++        "record.json": "b84074456821995083214e7880bda2197df79c03a29fb2da46fcccbf03b1380b"
++      },
++      "id": "anonymous-mcp-discovery",
++      "path": "cases/anonymous-mcp-discovery"
++    },
++    {
++      "difference_from_positive_control": "signed report is not registration",
++      "expected": {
++        "reason": "not_registration_event",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "70febd618cee77ace82dbc78c1b4248d36c868f20fd1cd28c59dfd820d7b8341",
++        "record.json": "24510a1108e3ffd3e7068890b79538ee552d0fbd533cd8f80f9d7d44bc552c18"
++      },
++      "id": "signed-report-not-registration",
++      "path": "cases/signed-report-not-registration"
++    },
++    {
++      "difference_from_positive_control": "quarantined record is not admission",
++      "expected": {
++        "reason": "not_durably_committed",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "70febd618cee77ace82dbc78c1b4248d36c868f20fd1cd28c59dfd820d7b8341",
++        "record.json": "42be9b4fb378513fa9561bf1a0b4d357841b32d1dcc679b5b1dc23f59b5540b6"
++      },
++      "id": "quarantined-report",
++      "path": "cases/quarantined-report"
++    },
++    {
++      "difference_from_positive_control": "single semantic-field change",
++      "expected": {
++        "reason": "consent_not_affirmative",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "70febd618cee77ace82dbc78c1b4248d36c868f20fd1cd28c59dfd820d7b8341",
++        "record.json": "fdbe9d808b8bb945318025fcafe77946e0d78200f3668b00d80b23322b43a8f2"
++      },
++      "id": "consent-revoked",
++      "path": "cases/consent-revoked"
++    },
++    {
++      "difference_from_positive_control": "consent to a different purpose",
++      "expected": {
++        "reason": "consent_scope_mismatch",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "70febd618cee77ace82dbc78c1b4248d36c868f20fd1cd28c59dfd820d7b8341",
++        "record.json": "8d6868ac89f9560aef4f82cb2d9039faf8cba9690bda9db7f3c21d8ee119f060"
++      },
++      "id": "wrong-consent-purpose",
++      "path": "cases/wrong-consent-purpose"
++    },
++    {
++      "difference_from_positive_control": "one agent swarm cannot register each child",
++      "expected": {
++        "reason": "ephemeral_or_child_agent",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "70febd618cee77ace82dbc78c1b4248d36c868f20fd1cd28c59dfd820d7b8341",
++        "record.json": "fb9076f08af576c2bb0e9826756c889eb5c7f6ad7977fbfb88dc102fa44010bf"
++      },
++      "id": "child-agent",
++      "path": "cases/child-agent"
++    },
++    {
++      "difference_from_positive_control": "known existing swarm",
++      "expected": {
++        "reason": "swarm_already_registered",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "749ec0a915511856c530ba322483eb2af086079398a4655bf614c1762088cba8",
++        "record.json": "b12d2dafdea070a98011fcb15606b397b414a7c5111c5d14eb5592310856b4f2"
++      },
++      "id": "duplicate-swarm",
++      "path": "cases/duplicate-swarm"
++    },
++    {
++      "difference_from_positive_control": "known existing agent",
++      "expected": {
++        "reason": "agent_already_registered",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "98102b82d1f64a3f5ead936bf769a3252d8f8ba258eeb5734f95c5a33ed1b95c",
++        "record.json": "8091245cc69ec89e500cdd6d4a3f39e6414d6415125df4455ea9e1160260e828"
++      },
++      "id": "duplicate-agent",
++      "path": "cases/duplicate-agent"
++    },
++    {
++      "difference_from_positive_control": "fresh signature cannot replace issuer challenge",
++      "expected": {
++        "reason": "challenge_binding_mismatch",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "70febd618cee77ace82dbc78c1b4248d36c868f20fd1cd28c59dfd820d7b8341",
++        "record.json": "280ad7ad6df24692316da5737d4c007e523b28f0c184eb3dda884904ab55d59a"
++      },
++      "id": "nonce-not-issued",
++      "path": "cases/nonce-not-issued"
++    },
++    {
++      "difference_from_positive_control": "expired issued challenge",
++      "expected": {
++        "reason": "challenge_expired_or_not_yet_issued",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "538d57dd598582819d0ae731aeb7102beb88a67fb3a2f96844116931ab83b9a0",
++        "record.json": "bd23ec80d0f8b6c60f9d5b83ad7fe02531fc4da45693dd04743abc5e65202d68"
++      },
++      "id": "challenge-expired",
++      "path": "cases/challenge-expired"
++    },
++    {
++      "difference_from_positive_control": "one-time challenge must not replay",
++      "expected": {
++        "reason": "challenge_replayed",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "83881e85c3406069988b3147a6b4c804459929e9322fb397077defd9e0bc838e",
++        "record.json": "bd23ec80d0f8b6c60f9d5b83ad7fe02531fc4da45693dd04743abc5e65202d68"
++      },
++      "id": "challenge-replayed",
++      "path": "cases/challenge-replayed"
++    },
++    {
++      "difference_from_positive_control": "an absent consumption flag is not evidence of non-use",
++      "expected": {
++        "reason": "challenge_state_unverified",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "27f4a7c009caf64960d2561e49b00907fdc977b90e8b56fc2b5e543c3de0f0df",
++        "record.json": "bd23ec80d0f8b6c60f9d5b83ad7fe02531fc4da45693dd04743abc5e65202d68"
++      },
++      "id": "challenge-state-missing",
++      "path": "cases/challenge-state-missing"
++    },
++    {
++      "difference_from_positive_control": "unknown consumption state cannot earn credit",
++      "expected": {
++        "reason": "challenge_state_unverified",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "b23b9e418a1fc57cfcf72930dbca930a54056f871103e39cf0b2d0c63718ca5b",
++        "record.json": "bd23ec80d0f8b6c60f9d5b83ad7fe02531fc4da45693dd04743abc5e65202d68"
++      },
++      "id": "challenge-state-null",
++      "path": "cases/challenge-state-null"
++    },
++    {
++      "difference_from_positive_control": "textual claim cannot replace an explicit unused state",
++      "expected": {
++        "reason": "challenge_state_unverified",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "0c1e1bca4049a2e1266b595877a4624448f942f53900848a3a38819659f5a726",
++        "record.json": "bd23ec80d0f8b6c60f9d5b83ad7fe02531fc4da45693dd04743abc5e65202d68"
++      },
++      "id": "challenge-state-text",
++      "path": "cases/challenge-state-text"
++    },
++    {
++      "difference_from_positive_control": "challenge binds agent key",
++      "expected": {
++        "reason": "challenge_key_mismatch",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "150db4c66053010f939080c6980122acfbf8def9046bfa14b1fe2be2b53efd13",
++        "record.json": "bd23ec80d0f8b6c60f9d5b83ad7fe02531fc4da45693dd04743abc5e65202d68"
++      },
++      "id": "wrong-challenge-key",
++      "path": "cases/wrong-challenge-key"
++    },
++    {
++      "difference_from_positive_control": "no agent signing key possession",
++      "expected": {
++        "reason": "agent_proof_invalid",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "70febd618cee77ace82dbc78c1b4248d36c868f20fd1cd28c59dfd820d7b8341",
++        "record.json": "24957ba376476341a315caf14f4cef34691c0b48691b456d2f332ae4089fe7d5"
++      },
++      "id": "forged-agent-signature",
++      "path": "cases/forged-agent-signature"
++    },
++    {
++      "difference_from_positive_control": "receipt must bind exact claimed payload",
++      "expected": {
++        "reason": "durable_receipt_binding_mismatch",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "70febd618cee77ace82dbc78c1b4248d36c868f20fd1cd28c59dfd820d7b8341",
++        "record.json": "6f9e938bf606d9f16457ba4019da5ac1cd0f277bca75dbd29462d13d589bcaf7"
++      },
++      "id": "tampered-committed-digest",
++      "path": "cases/tampered-committed-digest"
++    },
++    {
++      "difference_from_positive_control": "registry authority must sign receipt",
++      "expected": {
++        "reason": "durable_receipt_signature_invalid",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "70febd618cee77ace82dbc78c1b4248d36c868f20fd1cd28c59dfd820d7b8341",
++        "record.json": "6b33deaff7f6ee3dc36007915c190679aae7386ce05d783d50c10300979afafa"
++      },
++      "id": "forged-registry-receipt",
++      "path": "cases/forged-registry-receipt"
++    },
++    {
++      "difference_from_positive_control": "asserted durable status alone not sufficient",
++      "expected": {
++        "reason": "malformed_or_missing_evidence",
++        "registration_credit": false
++      },
++      "files": {
++        "context.json": "70febd618cee77ace82dbc78c1b4248d36c868f20fd1cd28c59dfd820d7b8341",
++        "record.json": "6bbb6927e483b8a13831dd36260957bcf6ce0316a2d3967ae726a5cabaa5d443"
++      },
++      "id": "missing-registry-receipt",
++      "path": "cases/missing-registry-receipt"
++    }
++  ]
++}
+diff --git a/corpora/vectors-agent-registration-classification/README.md b/corpora/vectors-agent-registration-classification/README.md
+new file mode 100644
+index 000000000..84ace8e06
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/README.md
+@@ -0,0 +1,29 @@
++# Registration evidence must not be inferred from agent discovery
++
++This is a **proposed** corpus for the Open Evidence Lab invitation in [#352](https://github.com/probityai/agent-evidence-vectors/issues/352). It has **not** been accepted, merged or independently reproduced. It implements a *candidate BuddyLists registration-classification policy*, **not an MCP normative rule**.
++
++The question is narrow: **May a conforming reader credit a record as one registered agent?** MCP discovery, including anonymous `tools/list` or tool use, is not registration. A signed report sitting in quarantine is not registration. A consented, durably committed and deduplicated registration with a bound and cryptographically verified one-use challenge and registry receipt is *eligible* for registration credit.
++
++All cases are synthetic. Keys are deterministically derived from public seed labels. Their signatures establish nothing about real agents, voluntary actions, independence, or deployed services. No test event may be added to production waitlist or conversion metrics.
++
++## Run
++
++```shell
++python -m pip install 'cryptography>=41'
++python3 gen_vectors.py --check
++python3 check_vectors.py
++```
++
++`gen_vectors.py` regenerates the complete `cases/`, `MANIFEST.json` and `INDEX.md` byte-for-byte; `--check` refuses drift. The checker independently reads the record and a fixture `context.json` that pins a trusted registry public key, an issued challenge and previously registered agent/swarm identifiers. The reader does **not** accept a mere `durable: true` self-assertion: it verifies an Ed25519-signed receipt over the semantic record digest and an Ed25519 agent challenge signature. This corpus uses a constrained ASCII JSON encoding, not RFC 8785 or DSSE.
++
++## Controls and limitations
++
++There is one positive registration control and negative cases for discovery, signed reports, quarantine, missing or wrong-purpose consent, child agents, duplicate swarms, duplicate agent identities, unissued/expired/replayed challenges, missing or unknown consumption states, key mismatch, forged signatures, and forged/missing durable receipts. The expected reason codes are pinned in the manifest. When a semantic field is changed, test signatures are regenerated to isolate the policy question; raw signature-tampering tests are separately included.
++
++No test establishes a human-controlled independent operator, a verifiable real-world legal identity, a truthful timestamp, that a record was committed in a production database, or that the same swarm cannot create a second identity outside the pictured registry. Those require operational controls, replay resistance, real intake logs and external validation. Registration is distinct from activation or publication. An accepted synthetic vector is **not** evidence of a real conversion.
++
++Upstream integration would require adapting this candidate's directory/registry metadata, generation workflow and verifier interface to the Lab's release checks. The host repository's `corpora/README.md` and packaging outputs must be regenerated by its maintainers' script rather than edited by hand.
++
++### Fail-closed correction (November 17, 2026)
++
++A follow-up self-audit found that the original candidate admitted challenge records with omitted, null or textual `consumed` state. Those now explicitly refuse as `challenge_state_unverified`; generated negative cases and adversarial controls pin this behavior. This corrected corpus **supersedes** the original digest `be36e10d04a39f24809e75c83870ca1649a7288170a2407cd6fda8ee11dac085` referenced in the initial issue comment. The cited error and its correction remain public; neither corpus has received independent review.
+diff --git a/corpora/vectors-agent-registration-classification/REGISTRY_ADDENDUM.toml b/corpora/vectors-agent-registration-classification/REGISTRY_ADDENDUM.toml
+new file mode 100644
+index 000000000..f999cc912
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/REGISTRY_ADDENDUM.toml
+@@ -0,0 +1,12 @@
++# Proposed addition to corpora/REGISTRY.toml, not yet merged.
++[[corpus]]
++id = "vectors-agent-registration-classification"
++path = "corpora/vectors-agent-registration-classification"
++wheel = true
++sdist = true
++title = "Agent registration evidence classification"
++summary = "Differentiate agent discovery and quarantined reports from consented durable registration with challenged key possession, deduplication, and signed registry evidence."
++record_class = "record"
++domains = ["identity", "provenance", "agent-protocols"]
++standards = ["mcp"]
++shapes = ["self-report", "missing-binding", "replay"]
+diff --git a/corpora/vectors-agent-registration-classification/adversarial_probe.py b/corpora/vectors-agent-registration-classification/adversarial_probe.py
+new file mode 100644
+index 000000000..53e687078
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/adversarial_probe.py
+@@ -0,0 +1,66 @@
++#!/usr/bin/env python3
++"""Deterministic extra falsification probes on synthetic records only.
++
++Not an independent audit and not evidence of actual registration.
++The goal is to find cases where missing or contradictory evidence is credited.
++"""
++from __future__ import annotations
++import copy, json, random
++from pathlib import Path
++from contract import classify
++
++root=Path(__file__).resolve().parent
++record=json.loads((root/'cases/valid-new-registration/record.json').read_text())
++context=json.loads((root/'cases/valid-new-registration/context.json').read_text())
++assert classify(record,context)[0] is True
++
++
++def mutate(r,c,which):
++    challenge=c['issued_challenge']; core=r['core']; receipt=r['registry_receipt']
++    match which:
++        case 'missing-consumed': challenge.pop('consumed',None)
++        case 'unknown-consumed': challenge['consumed']=None
++        case 'wrong-type-consumed': challenge['consumed']='false'
++        case 'numeric-consumed': challenge['consumed']=0
++        case 'replayed': challenge['consumed']=True
++        case 'missing-challenge': c.pop('issued_challenge',None)
++        case 'wrong-issued-nonce': challenge['challenge_nonce']='other'
++        case 'expired': challenge['expires_at']='2026-11-17T11:00:01Z'
++        case 'wrong-challenge-key': challenge['agent_public_key']='AA=='
++        case 'wrong-core-purpose': core['consent_scope']='telemetry'
++        case 'no-consent': core['consent']=False
++        case 'no-consent-field': core.pop('consent',None)
++        case 'child-agent': core['parent_agent_id']='child-of-parent'
++        case 'quarantine': core['intake_state']='quarantined'
++        case 'fake-discovery': core['event_type']='tools/list'
++        case 'wrong-agent-signature': r['agent_signature']='AAAA'
++        case 'missing-agent-signature': r.pop('agent_signature',None)
++        case 'forged-registry-signature': receipt['signature']='AAAA'
++        case 'missing-registry-receipt': r.pop('registry_receipt',None)
++        case 'wrong-registry-status': receipt['body']['status']='pending'
++        case 'changed-payload': core['agent_id']='different-agent'
++        case 'duplicate-swarm': c['prior_registered_swarms']=[core['swarm_id']]
++        case 'duplicate-agent': c['prior_registered_agents']=[core['agent_id']]
++        case _: raise AssertionError(which)
++
++names=('missing-consumed','unknown-consumed','wrong-type-consumed','numeric-consumed',
++       'replayed','missing-challenge','wrong-issued-nonce','expired','wrong-challenge-key',
++       'wrong-core-purpose','no-consent','no-consent-field','child-agent','quarantine',
++       'fake-discovery','wrong-agent-signature','missing-agent-signature',
++       'forged-registry-signature','missing-registry-receipt','wrong-registry-status',
++       'changed-payload','duplicate-swarm','duplicate-agent')
++
++rng=random.Random(20261117)
++for idx in range(500):
++    r,c=copy.deepcopy(record),copy.deepcopy(context)
++    name=rng.choice(names)
++    mutate(r,c,name)
++    verdict=classify(r,c)
++    assert verdict[0] is False,(idx,name,verdict)
++
++for name in names:
++    r,c=copy.deepcopy(record),copy.deepcopy(context)
++    mutate(r,c,name)
++    verdict=classify(r,c)
++    assert verdict[0] is False,(name,verdict)
++print(f'ADVERSARIAL_PROBES_PASS: 500 deterministic mutant trials, {len(names)} distinct mutation classes; no false credit')
+diff --git a/corpora/vectors-agent-registration-classification/cases/anonymous-mcp-discovery/context.json b/corpora/vectors-agent-registration-classification/cases/anonymous-mcp-discovery/context.json
+new file mode 100644
+index 000000000..b777223f2
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/anonymous-mcp-discovery/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/anonymous-mcp-discovery/record.json b/corpora/vectors-agent-registration-classification/cases/anonymous-mcp-discovery/record.json
+new file mode 100644
+index 000000000..24568dbaf
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/anonymous-mcp-discovery/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "N9afbr695/J5981xNe/rEpaGO85nP0AVkBrrJyKREmPundeRxPhVbkPqqvRxTji0aVkOOef8KicD116KWUftCw==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "mcp_discovery",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:536ad8790f4504f6be4cc5017fc9a07b18d586bd2e9e13180fd812049c9ac1fe",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "L7Bm+l8AFKYppCP+PouPfK9iT9yRsJH2aLCtnKsqUhVvd48OCsTQpqPfnaHZLERBcJlPC6OvFPQYJ1NRGATkDA=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/challenge-expired/context.json b/corpora/vectors-agent-registration-classification/cases/challenge-expired/context.json
+new file mode 100644
+index 000000000..a64eac76a
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/challenge-expired/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T11:30:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/challenge-expired/record.json b/corpora/vectors-agent-registration-classification/cases/challenge-expired/record.json
+new file mode 100644
+index 000000000..bca48f0d9
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/challenge-expired/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "IeT7RlkESsa7feEfIx9dA7ncEkm7TGG3kiNVjdHVf12VRnY/vAp0Qf/BnoJNwPn2kolIwE4KZc4U+AriF7Y5Bw==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:20dbea116ee1d7b6eaa82be67dd1a161f8c72d5ecdeefebb7e01016a5f0bc303",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "lSs9YgOmSMSAdAofCykcMgsG0XU8STVJLMllfd2lU0IaIAzVkvvANsOWBFFNF7ckGpmCJojVnAJ4ae+Q7jMYAA=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/challenge-replayed/context.json b/corpora/vectors-agent-registration-classification/cases/challenge-replayed/context.json
+new file mode 100644
+index 000000000..07c03ff4a
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/challenge-replayed/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": true,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/challenge-replayed/record.json b/corpora/vectors-agent-registration-classification/cases/challenge-replayed/record.json
+new file mode 100644
+index 000000000..bca48f0d9
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/challenge-replayed/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "IeT7RlkESsa7feEfIx9dA7ncEkm7TGG3kiNVjdHVf12VRnY/vAp0Qf/BnoJNwPn2kolIwE4KZc4U+AriF7Y5Bw==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:20dbea116ee1d7b6eaa82be67dd1a161f8c72d5ecdeefebb7e01016a5f0bc303",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "lSs9YgOmSMSAdAofCykcMgsG0XU8STVJLMllfd2lU0IaIAzVkvvANsOWBFFNF7ckGpmCJojVnAJ4ae+Q7jMYAA=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/challenge-state-missing/context.json b/corpora/vectors-agent-registration-classification/cases/challenge-state-missing/context.json
+new file mode 100644
+index 000000000..314677d2e
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/challenge-state-missing/context.json
+@@ -0,0 +1,18 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/challenge-state-missing/record.json b/corpora/vectors-agent-registration-classification/cases/challenge-state-missing/record.json
+new file mode 100644
+index 000000000..bca48f0d9
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/challenge-state-missing/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "IeT7RlkESsa7feEfIx9dA7ncEkm7TGG3kiNVjdHVf12VRnY/vAp0Qf/BnoJNwPn2kolIwE4KZc4U+AriF7Y5Bw==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:20dbea116ee1d7b6eaa82be67dd1a161f8c72d5ecdeefebb7e01016a5f0bc303",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "lSs9YgOmSMSAdAofCykcMgsG0XU8STVJLMllfd2lU0IaIAzVkvvANsOWBFFNF7ckGpmCJojVnAJ4ae+Q7jMYAA=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/challenge-state-null/context.json b/corpora/vectors-agent-registration-classification/cases/challenge-state-null/context.json
+new file mode 100644
+index 000000000..698ac20da
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/challenge-state-null/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": null,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/challenge-state-null/record.json b/corpora/vectors-agent-registration-classification/cases/challenge-state-null/record.json
+new file mode 100644
+index 000000000..bca48f0d9
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/challenge-state-null/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "IeT7RlkESsa7feEfIx9dA7ncEkm7TGG3kiNVjdHVf12VRnY/vAp0Qf/BnoJNwPn2kolIwE4KZc4U+AriF7Y5Bw==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:20dbea116ee1d7b6eaa82be67dd1a161f8c72d5ecdeefebb7e01016a5f0bc303",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "lSs9YgOmSMSAdAofCykcMgsG0XU8STVJLMllfd2lU0IaIAzVkvvANsOWBFFNF7ckGpmCJojVnAJ4ae+Q7jMYAA=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/challenge-state-text/context.json b/corpora/vectors-agent-registration-classification/cases/challenge-state-text/context.json
+new file mode 100644
+index 000000000..1013bd01a
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/challenge-state-text/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": "not-checked",
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/challenge-state-text/record.json b/corpora/vectors-agent-registration-classification/cases/challenge-state-text/record.json
+new file mode 100644
+index 000000000..bca48f0d9
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/challenge-state-text/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "IeT7RlkESsa7feEfIx9dA7ncEkm7TGG3kiNVjdHVf12VRnY/vAp0Qf/BnoJNwPn2kolIwE4KZc4U+AriF7Y5Bw==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:20dbea116ee1d7b6eaa82be67dd1a161f8c72d5ecdeefebb7e01016a5f0bc303",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "lSs9YgOmSMSAdAofCykcMgsG0XU8STVJLMllfd2lU0IaIAzVkvvANsOWBFFNF7ckGpmCJojVnAJ4ae+Q7jMYAA=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/child-agent/context.json b/corpora/vectors-agent-registration-classification/cases/child-agent/context.json
+new file mode 100644
+index 000000000..b777223f2
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/child-agent/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/child-agent/record.json b/corpora/vectors-agent-registration-classification/cases/child-agent/record.json
+new file mode 100644
+index 000000000..0651e4add
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/child-agent/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "U1oZj5iD++UBHvCP3YqwIF6ytz82m0ejuXXbcuJJO6Gx/H4Uwqf/4P/68L+mI3PwRbXTExqiKODuSG8hYsGjAQ==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": "synthetic-parent",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:ff121e61e3f500a14984570c9bb52fad97621ad00bdd4c71354ecfe3975d14d0",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "AoNW/SxMt/06+Vs4D9x18ASuT/QbqWyv14UlsVKS2u25AWA5F9tbC9dB6Vko04EVdqnC16WHJ9NQ86lQCe/bBQ=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/consent-revoked/context.json b/corpora/vectors-agent-registration-classification/cases/consent-revoked/context.json
+new file mode 100644
+index 000000000..b777223f2
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/consent-revoked/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/consent-revoked/record.json b/corpora/vectors-agent-registration-classification/cases/consent-revoked/record.json
+new file mode 100644
+index 000000000..0cd229612
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/consent-revoked/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "xDv70qClObvemqqihF1X+oTXdvCAQ2k7VkQl7YP0IC+HbycWVbWWYPAA36pbbkQgKPqHlcsmiUDIlLTk87ClBA==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": false,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:b7015a2e30981bd71bf04d326fd3bac581844145c7ea0e19b69f5c37a3725e64",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "m4r/c4AUNMDK+0dD1PolfFyxkeKEcSQ4FPAphRKcR2HGqoFJhh3OAX1Tnot5E4ysLCOmA1Cn4JA4/vPwFgvgAw=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/duplicate-agent/context.json b/corpora/vectors-agent-registration-classification/cases/duplicate-agent/context.json
+new file mode 100644
+index 000000000..91776a31e
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/duplicate-agent/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-occupied",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/duplicate-agent/record.json b/corpora/vectors-agent-registration-classification/cases/duplicate-agent/record.json
+new file mode 100644
+index 000000000..6267dc01e
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/duplicate-agent/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "GcOUDmVJga08Ajpk7ukd6Bft9w5rHpd4FNmKMr+75OIh8PUbCpISVzC0Jj+zxtXG3hE1NAZsamR265cg96X8CA==",
++  "core": {
++    "agent_id": "synthetic-agent-occupied",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-occupied",
++      "record_digest": "sha256:0dea80f2e728865fcd1931f1b051b3e3d95d8a8ab055691bbf85e5ea27a97793",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "6ZflUlZm3aoFZoIqRu3hdX1OJMoK6kaRrSSAI2MPSxaTy/sxFnSkaYlCxbuwdnEzXJP35jqOErOIjpx+6wjzCQ=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/duplicate-swarm/context.json b/corpora/vectors-agent-registration-classification/cases/duplicate-swarm/context.json
+new file mode 100644
+index 000000000..bdafd2735
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/duplicate-swarm/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-occupied"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/duplicate-swarm/record.json b/corpora/vectors-agent-registration-classification/cases/duplicate-swarm/record.json
+new file mode 100644
+index 000000000..485d37a42
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/duplicate-swarm/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "4cj59QX4Dwgq/2UqLIustyLPn4yLyTut+Av99Yj9+GMgva2Tsr1+Dqzi7HP7Yu0oPPGsvjO0lThMH2eMCwDnDA==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-occupied"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:dbe3fd6ff32a20f47cf31acf89eb47f8a12abf1442d1d3861d690cb8db918699",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-occupied"
++    },
++    "signature": "9C8N00xUNb+1j76I09ob/O9cwV87qt7xTDbETz5is7goNd89RRT/nrPA+RpwhpuLFl8cBoSzr2BmsigMjvhrBw=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/forged-agent-signature/context.json b/corpora/vectors-agent-registration-classification/cases/forged-agent-signature/context.json
+new file mode 100644
+index 000000000..b777223f2
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/forged-agent-signature/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/forged-agent-signature/record.json b/corpora/vectors-agent-registration-classification/cases/forged-agent-signature/record.json
+new file mode 100644
+index 000000000..8eab09a96
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/forged-agent-signature/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:20dbea116ee1d7b6eaa82be67dd1a161f8c72d5ecdeefebb7e01016a5f0bc303",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "lSs9YgOmSMSAdAofCykcMgsG0XU8STVJLMllfd2lU0IaIAzVkvvANsOWBFFNF7ckGpmCJojVnAJ4ae+Q7jMYAA=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/forged-registry-receipt/context.json b/corpora/vectors-agent-registration-classification/cases/forged-registry-receipt/context.json
+new file mode 100644
+index 000000000..b777223f2
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/forged-registry-receipt/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/forged-registry-receipt/record.json b/corpora/vectors-agent-registration-classification/cases/forged-registry-receipt/record.json
+new file mode 100644
+index 000000000..1928ac7dc
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/forged-registry-receipt/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "IeT7RlkESsa7feEfIx9dA7ncEkm7TGG3kiNVjdHVf12VRnY/vAp0Qf/BnoJNwPn2kolIwE4KZc4U+AriF7Y5Bw==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:20dbea116ee1d7b6eaa82be67dd1a161f8c72d5ecdeefebb7e01016a5f0bc303",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/missing-registry-receipt/context.json b/corpora/vectors-agent-registration-classification/cases/missing-registry-receipt/context.json
+new file mode 100644
+index 000000000..b777223f2
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/missing-registry-receipt/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/missing-registry-receipt/record.json b/corpora/vectors-agent-registration-classification/cases/missing-registry-receipt/record.json
+new file mode 100644
+index 000000000..619af43dc
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/missing-registry-receipt/record.json
+@@ -0,0 +1,15 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "IeT7RlkESsa7feEfIx9dA7ncEkm7TGG3kiNVjdHVf12VRnY/vAp0Qf/BnoJNwPn2kolIwE4KZc4U+AriF7Y5Bw==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": null
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/nonce-not-issued/context.json b/corpora/vectors-agent-registration-classification/cases/nonce-not-issued/context.json
+new file mode 100644
+index 000000000..b777223f2
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/nonce-not-issued/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/nonce-not-issued/record.json b/corpora/vectors-agent-registration-classification/cases/nonce-not-issued/record.json
+new file mode 100644
+index 000000000..558b868e5
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/nonce-not-issued/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "8oh7kmNKZyPWILmz3cV0Xu/d3d42dsv6njAD0IDD9n5eSDliZw9B3ih6F0ioA0vzyt8ah2otrgHhSNsr4wXbDg==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-unissued",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:91f5593ec0925b83b8eb4d91e99dcbf3c45bee9042c269c4921255dd41cea1b1",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "ND2BIEuIEsqXlnsSczDv24QB+rViV9tUxkiF/K66thEY53RHwsP7HevrXroVlTIa6N0gvBkTA3Jqwzt/0F+9Ag=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/quarantined-report/context.json b/corpora/vectors-agent-registration-classification/cases/quarantined-report/context.json
+new file mode 100644
+index 000000000..b777223f2
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/quarantined-report/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/quarantined-report/record.json b/corpora/vectors-agent-registration-classification/cases/quarantined-report/record.json
+new file mode 100644
+index 000000000..7fb7b9897
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/quarantined-report/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "oLGZCZZakw9GVTpmo5Vp86G5tLfd5yYwt63E6gZdmVdJ49koh+qJQn3nRYo3Xl5Id4EMHI9zzKibiEzICQbTBw==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "quarantined",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:2af5a56bd9158d4cea896bb6f09feead726cb36779b672eb4a096c8d4ebd2591",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "62z8ZKBm2cfPV6babEMeY56NB7TyEYQLtrtB1GJ5g4tnucRnXrdQAeZir7HnUVaMUcAlNG6im4SgUdIckailCw=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/signed-report-not-registration/context.json b/corpora/vectors-agent-registration-classification/cases/signed-report-not-registration/context.json
+new file mode 100644
+index 000000000..b777223f2
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/signed-report-not-registration/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/signed-report-not-registration/record.json b/corpora/vectors-agent-registration-classification/cases/signed-report-not-registration/record.json
+new file mode 100644
+index 000000000..8d439f4ef
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/signed-report-not-registration/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "saqqPs5xkPYrx7k+J1LHfEZFrFJKyUNAGGbqXBVBdtYkUybCXm3Ta7NcQFvSHLhLheGRN101vE/4O42p7AKTCA==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "signed_report",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:8c4873122f5a0dbcdc51489968cfeb4cb7ef2cf3035bdaf3ec8bbdeab7bc5913",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "dcZ3JPnSWNfnpwPocyI1IOHVgZJA2qEn3L2lP04OEJHHmGTwbeGj95/93xjBcu5a3bUymfIYlyZo87q7kud5Ag=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/tampered-committed-digest/context.json b/corpora/vectors-agent-registration-classification/cases/tampered-committed-digest/context.json
+new file mode 100644
+index 000000000..b777223f2
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/tampered-committed-digest/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/tampered-committed-digest/record.json b/corpora/vectors-agent-registration-classification/cases/tampered-committed-digest/record.json
+new file mode 100644
+index 000000000..ed2241be8
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/tampered-committed-digest/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "IeT7RlkESsa7feEfIx9dA7ncEkm7TGG3kiNVjdHVf12VRnY/vAp0Qf/BnoJNwPn2kolIwE4KZc4U+AriF7Y5Bw==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "lSs9YgOmSMSAdAofCykcMgsG0XU8STVJLMllfd2lU0IaIAzVkvvANsOWBFFNF7ckGpmCJojVnAJ4ae+Q7jMYAA=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/valid-new-registration/context.json b/corpora/vectors-agent-registration-classification/cases/valid-new-registration/context.json
+new file mode 100644
+index 000000000..b777223f2
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/valid-new-registration/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/valid-new-registration/record.json b/corpora/vectors-agent-registration-classification/cases/valid-new-registration/record.json
+new file mode 100644
+index 000000000..bca48f0d9
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/valid-new-registration/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "IeT7RlkESsa7feEfIx9dA7ncEkm7TGG3kiNVjdHVf12VRnY/vAp0Qf/BnoJNwPn2kolIwE4KZc4U+AriF7Y5Bw==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:20dbea116ee1d7b6eaa82be67dd1a161f8c72d5ecdeefebb7e01016a5f0bc303",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "lSs9YgOmSMSAdAofCykcMgsG0XU8STVJLMllfd2lU0IaIAzVkvvANsOWBFFNF7ckGpmCJojVnAJ4ae+Q7jMYAA=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/wrong-challenge-key/context.json b/corpora/vectors-agent-registration-classification/cases/wrong-challenge-key/context.json
+new file mode 100644
+index 000000000..1d7f5043f
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/wrong-challenge-key/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "ZAMwgDLsq52WnKozsHuCtT1RZqcmWyU6URZT/URWQ14=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/wrong-challenge-key/record.json b/corpora/vectors-agent-registration-classification/cases/wrong-challenge-key/record.json
+new file mode 100644
+index 000000000..bca48f0d9
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/wrong-challenge-key/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "IeT7RlkESsa7feEfIx9dA7ncEkm7TGG3kiNVjdHVf12VRnY/vAp0Qf/BnoJNwPn2kolIwE4KZc4U+AriF7Y5Bw==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "registration",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:20dbea116ee1d7b6eaa82be67dd1a161f8c72d5ecdeefebb7e01016a5f0bc303",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "lSs9YgOmSMSAdAofCykcMgsG0XU8STVJLMllfd2lU0IaIAzVkvvANsOWBFFNF7ckGpmCJojVnAJ4ae+Q7jMYAA=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/wrong-consent-purpose/context.json b/corpora/vectors-agent-registration-classification/cases/wrong-consent-purpose/context.json
+new file mode 100644
+index 000000000..b777223f2
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/wrong-consent-purpose/context.json
+@@ -0,0 +1,19 @@
++{
++  "evaluation_time": "2026-11-17T12:00:00Z",
++  "issued_challenge": {
++    "agent_id": "synthetic-agent-a",
++    "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consumed": false,
++    "expires_at": "2026-11-17T13:00:00Z",
++    "issued_at": "2026-11-17T11:00:00Z",
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "prior_registered_agents": [
++    "synthetic-agent-occupied"
++  ],
++  "prior_registered_swarms": [
++    "synthetic-swarm-occupied"
++  ],
++  "trusted_registry_public_key": "5tRrTBWF7/+HjGP7D9tGa46JBipCCx69bzM9opqcn3I="
++}
+diff --git a/corpora/vectors-agent-registration-classification/cases/wrong-consent-purpose/record.json b/corpora/vectors-agent-registration-classification/cases/wrong-consent-purpose/record.json
+new file mode 100644
+index 000000000..e846a2779
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/cases/wrong-consent-purpose/record.json
+@@ -0,0 +1,23 @@
++{
++  "agent_public_key": "IYEQR7FTB2gdRwnPckuAvL1iSJWLnjfjvQwYZd4qKJE=",
++  "agent_signature": "uikMkOHDuN/wfGyPBQr77z0ypYIE/LG7HyW81D9bI5HVBAwP4ZuFzs3iuwOYZ2Dfun01lWO3Zv1H6oQMMUSyCg==",
++  "core": {
++    "agent_id": "synthetic-agent-a",
++    "challenge_nonce": "synthetic-issued-nonce-7",
++    "consent": true,
++    "consent_scope": "telemetry",
++    "event_type": "registration",
++    "intake_state": "durably_committed",
++    "parent_agent_id": null,
++    "swarm_id": "synthetic-swarm-new"
++  },
++  "registry_receipt": {
++    "body": {
++      "agent_id": "synthetic-agent-a",
++      "record_digest": "sha256:bd32d0480e22848f9548d3839e5ec56fce71ea9ea4eea440c78949810286fc03",
++      "status": "committed",
++      "swarm_id": "synthetic-swarm-new"
++    },
++    "signature": "3+5FhXfScIJBF4b9HEf9RCE5P0DHdaehS0R3jUPDPxvVXJJW6dIOusWT8ZLg0Nl5jIlGLPuxoYbHJ34rjvOZAg=="
++  }
++}
+diff --git a/corpora/vectors-agent-registration-classification/check_vectors.py b/corpora/vectors-agent-registration-classification/check_vectors.py
+new file mode 100644
+index 000000000..35b79f5db
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/check_vectors.py
+@@ -0,0 +1,61 @@
++#!/usr/bin/env python3
++"""Validate generated digests, case-by-case verdicts, then negative controls."""
++from __future__ import annotations
++import copy,hashlib,json
++from pathlib import Path
++from contract import classify,canonical
++ROOT=Path(__file__).resolve().parent
++manifest=json.loads((ROOT/'MANIFEST.json').read_text())
++
++def validate_manifest(document):
++    paths = []
++    for entry in document['vectors']:
++        for fn in ('record.json', 'context.json'):
++            paths.append(f"{entry['path']}/{fn}")
++    recomputed = hashlib.sha256(b''.join((ROOT / path).read_bytes() for path in sorted(paths))).hexdigest()
++    assert document['corpusDigest'] == recomputed, 'aggregate corpus digest does not match generated data'
++    expected_counts = {
++        'registration_credit': sum(x['expected']['registration_credit'] is True for x in document['vectors']),
++        'no_registration_credit': sum(x['expected']['registration_credit'] is False for x in document['vectors']),
++    }
++    assert document['counts'] == expected_counts, 'manifest summary does not agree with vectors'
++
++validate_manifest(manifest)
++mutantdoc=copy.deepcopy(manifest);mutantdoc['corpusDigest']='0'*64
++try:
++    validate_manifest(mutantdoc)
++except AssertionError:
++    pass
++else:
++    raise AssertionError('tampered aggregate digest incorrectly accepted')
++mutantdoc=copy.deepcopy(manifest);mutantdoc['counts']['registration_credit'] += 1
++try:
++    validate_manifest(mutantdoc)
++except AssertionError:
++    pass
++else:
++    raise AssertionError('tampered summary count incorrectly accepted')
++for entry in manifest['vectors']:
++    path=ROOT/entry['path']
++    for fn,h in entry['files'].items():
++        assert hashlib.sha256((path/fn).read_bytes()).hexdigest()==h,entry['id']+fn
++    record=json.loads((path/'record.json').read_text())
++    context=json.loads((path/'context.json').read_text())
++    result=classify(record,context)
++    expected=entry['expected']
++    assert result == (expected['registration_credit'],expected['reason']),(entry['id'],result,expected)
++# Tests that a checker which accepts everything or believes a boolean consent alone is insufficient.
++positive=json.loads((ROOT/'cases/valid-new-registration/record.json').read_text())
++ctx=json.loads((ROOT/'cases/valid-new-registration/context.json').read_text())
++assert classify(positive,ctx)[0] is True
++mutant=copy.deepcopy(positive);mutant['core']['consent']=False
++assert classify(mutant,ctx)[0] is False
++mutant=copy.deepcopy(positive);mutant['registry_receipt']['body']['status']='pending'
++assert classify(mutant,ctx)[0] is False
++mutant=copy.deepcopy(positive);mutant['agent_signature']=''
++assert classify(mutant,ctx)[0] is False
++mutantctx=copy.deepcopy(ctx);mutantctx['issued_challenge'].pop('consumed')
++assert classify(positive,mutantctx)[0] is False
++mutantctx=copy.deepcopy(ctx);mutantctx['issued_challenge']['consumed']=None
++assert classify(positive,mutantctx)[0] is False
++print('CLASSIFICATION_PASS '+str(len(manifest['vectors']))+' generated cases; 5 adversarial reader controls; 2 manifest-integrity probes')
+diff --git a/corpora/vectors-agent-registration-classification/contract.py b/corpora/vectors-agent-registration-classification/contract.py
+new file mode 100644
+index 000000000..dd2d75b44
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/contract.py
+@@ -0,0 +1,93 @@
++"""Reference reader for the *proposed* BuddyLists registration evidence boundary.
++
++This is a standalone, synthetic test policy, not an MCP standard and not a
++verification of any live BuddyLists registration. Needs cryptography >= 41.
++"""
++from __future__ import annotations
++
++import base64
++import hashlib
++import json
++from datetime import datetime, timezone
++from typing import Any
++from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
++from cryptography.exceptions import InvalidSignature
++
++
++def canonical(value: Any) -> bytes:
++    # Our local, explicitly constrained JSON subset, NOT RFC 8785 JCS.
++    return json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=True, allow_nan=False).encode('ascii')
++
++
++def digest(value: Any) -> str:
++    return 'sha256:' + hashlib.sha256(canonical(value)).hexdigest()
++
++
++def signed(message: bytes, signature_b64: str, public_b64: str) -> bool:
++    try:
++        pub = Ed25519PublicKey.from_public_bytes(base64.b64decode(public_b64, validate=True))
++        sig = base64.b64decode(signature_b64, validate=True)
++        pub.verify(sig, message)
++        return True
++    except (InvalidSignature, TypeError, ValueError, KeyError):
++        return False
++
++
++def parse_time(value: str) -> datetime:
++    d = datetime.fromisoformat(value.replace('Z', '+00:00'))
++    if d.tzinfo is None:
++        raise ValueError('timestamp lacks offset')
++    return d.astimezone(timezone.utc)
++
++
++def classify(record: dict, context: dict) -> tuple[bool, str]:
++    """Return registration credit and the first explicit reason.
++
++    Fail closed: an unknown or malformed record must not earn registration.
++    This function deliberately grants no activation or independence credit.
++    """
++    try:
++        core = record['core']
++        if core.get('event_type') != 'registration':
++            return False, 'not_registration_event'
++        if core.get('intake_state') != 'durably_committed':
++            return False, 'not_durably_committed'
++        if core.get('consent') is not True:
++            return False, 'consent_not_affirmative'
++        if core.get('consent_scope') != 'registration':
++            return False, 'consent_scope_mismatch'
++        if core.get('parent_agent_id') is not None:
++            return False, 'ephemeral_or_child_agent'
++        if core.get('swarm_id') in context['prior_registered_swarms']:
++            return False, 'swarm_already_registered'
++        if core.get('agent_id') in context['prior_registered_agents']:
++            return False, 'agent_already_registered'
++        challenge = context['issued_challenge']
++        if any(challenge.get(k) != core.get(k) for k in ('agent_id', 'swarm_id', 'challenge_nonce')):
++            return False, 'challenge_binding_mismatch'
++        now = parse_time(context['evaluation_time'])
++        if not (parse_time(challenge['issued_at']) <= now < parse_time(challenge['expires_at'])):
++            return False, 'challenge_expired_or_not_yet_issued'
++        if challenge.get('consumed') is True:
++            return False, 'challenge_replayed'
++        # Unknown and missing consumption states are NOT evidence of non-use.
++        # In particular, `None` or an omitted field must never be credited as
++        # an unused nonce (the caller is relying on a trusted registry ledger).
++        if challenge.get('consumed') is not False:
++            return False, 'challenge_state_unverified'
++        agent_public = record['agent_public_key']
++        if agent_public != challenge['agent_public_key']:
++            return False, 'challenge_key_mismatch'
++        if not signed(b'BUDDYLISTS_TEST_REGISTRATION_V1\x00' + canonical(core), record['agent_signature'], agent_public):
++            return False, 'agent_proof_invalid'
++        receipt = record['registry_receipt']
++        receipt_body = receipt['body']
++        if (receipt_body.get('record_digest') != digest(core) or receipt_body.get('agent_id') != core['agent_id']
++                or receipt_body.get('swarm_id') != core['swarm_id'] or receipt_body.get('status') != 'committed'):
++            return False, 'durable_receipt_binding_mismatch'
++        if not signed(b'BUDDYLISTS_TEST_RECEIPT_V1\x00' + canonical(receipt_body),
++                      receipt['signature'], context['trusted_registry_public_key']):
++            return False, 'durable_receipt_signature_invalid'
++        return True, 'registration_evidence_sufficient_for_fixture'
++    except (KeyError, TypeError, ValueError, OverflowError, AttributeError):
++        return False, 'malformed_or_missing_evidence'
+diff --git a/corpora/vectors-agent-registration-classification/gen_vectors.py b/corpora/vectors-agent-registration-classification/gen_vectors.py
+new file mode 100644
+index 000000000..c0b3ef8b6
+--- /dev/null
++++ b/corpora/vectors-agent-registration-classification/gen_vectors.py
+@@ -0,0 +1,132 @@
++#!/usr/bin/env python3
++"""Build synthetic registration-classification vectors reproducibly; --check verifies byte identity.
++
++Tests implement a proposed community-level policy, NOT MCP normative registration.
++All keys derived from public labels; all agent identities are synthetic.
++"""
++from __future__ import annotations
++import argparse, base64, copy, hashlib, json, sys
++from pathlib import Path
++from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
++from cryptography.hazmat.primitives import serialization
++from contract import canonical, digest
++
++ROOT = Path(__file__).resolve().parent
++PREFIX = 'buddylists-synthetic-registration/v1/'
++
++def key(label):
++    seed = hashlib.sha256((PREFIX+label).encode('utf8')).digest()
++    return Ed25519PrivateKey.from_private_bytes(seed)
++
++def b64(b): return base64.b64encode(b).decode('ascii')
++def pub(k): return b64(k.public_key().public_bytes(serialization.Encoding.Raw, serialization.PublicFormat.Raw))
++def sign(k, msg): return b64(k.sign(msg))
++def js(value): return (json.dumps(value, indent=2, sort_keys=True, ensure_ascii=True, allow_nan=False)+'\n').encode('ascii')
++
++AGENT, REGISTRY = key('agent-demo'), key('registry-demo')
++CORE = {
++  'event_type': 'registration', 'intake_state': 'durably_committed',
++  'agent_id': 'synthetic-agent-a', 'swarm_id': 'synthetic-swarm-new',
++  'parent_agent_id': None, 'consent': True, 'consent_scope': 'registration',
++  'challenge_nonce': 'synthetic-issued-nonce-7'
++}
++
++def make(name, core_change=None, context_change=None, record_change=None):
++    c=copy.deepcopy(CORE)
++    if core_change: c.update(core_change)
++    ctx={
++      'evaluation_time':'2026-11-17T12:00:00Z',
++      'prior_registered_swarms':['synthetic-swarm-occupied'],
++      'prior_registered_agents':['synthetic-agent-occupied'],
++      'trusted_registry_public_key':pub(REGISTRY),
++      'issued_challenge':{
++        'agent_id':c['agent_id'], 'swarm_id':c['swarm_id'],
++        'challenge_nonce':CORE['challenge_nonce'],
++        'agent_public_key':pub(AGENT),
++        'issued_at':'2026-11-17T11:00:00Z',
++        'expires_at':'2026-11-17T13:00:00Z',
++        'consumed':False
++      }
++    }
++    if context_change:
++        for path,val in context_change.items():
++            target=ctx
++            parts=path.split('.')
++            for p in parts[:-1]:target=target[p]
++            if val == '__REMOVE__':
++                target.pop(parts[-1], None)
++            else:
++                target[parts[-1]]=val
++    body={'record_digest': digest(c),'agent_id':c['agent_id'],'swarm_id':c['swarm_id'],'status':'committed'}
++    r={
++      'core':c,
++      'agent_public_key':pub(AGENT),
++      'agent_signature':sign(AGENT,b'BUDDYLISTS_TEST_REGISTRATION_V1\x00'+canonical(c)),
++      'registry_receipt': {'body':body,'signature':sign(REGISTRY,b'BUDDYLISTS_TEST_RECEIPT_V1\x00'+canonical(body))}
++    }
++    if record_change:
++        for path,val in record_change.items():
++            target=r
++            parts=path.split('.')
++            for p in parts[:-1]:target=target[p]
++            target[parts[-1]]=val
++    return name,r,ctx
++
++CASES=[
++ ('valid-new-registration', None,None,None,True,'registration_evidence_sufficient_for_fixture','positive control'),
++ ('anonymous-mcp-discovery', {'event_type':'mcp_discovery'},None,None,False,'not_registration_event','MCP tools/list is not a registration'),
++ ('signed-report-not-registration', {'event_type':'signed_report'},None,None,False,'not_registration_event','signed report is not registration'),
++ ('quarantined-report', {'intake_state':'quarantined'},None,None,False,'not_durably_committed','quarantined record is not admission'),
++ ('consent-revoked', {'consent':False},None,None,False,'consent_not_affirmative','single semantic-field change'),
++ ('wrong-consent-purpose', {'consent_scope':'telemetry'},None,None,False,'consent_scope_mismatch','consent to a different purpose'),
++ ('child-agent', {'parent_agent_id':'synthetic-parent'},None,None,False,'ephemeral_or_child_agent','one agent swarm cannot register each child'),
++ ('duplicate-swarm', {'swarm_id':'synthetic-swarm-occupied'},None,None,False,'swarm_already_registered','known existing swarm'),
++ ('duplicate-agent', {'agent_id':'synthetic-agent-occupied'},None,None,False,'agent_already_registered','known existing agent'),
++ ('nonce-not-issued', {'challenge_nonce':'synthetic-unissued'},None,None,False,'challenge_binding_mismatch','fresh signature cannot replace issuer challenge'),
++ ('challenge-expired', None,{'issued_challenge.expires_at':'2026-11-17T11:30:00Z'},None,False,'challenge_expired_or_not_yet_issued','expired issued challenge'),
++ ('challenge-replayed', None,{'issued_challenge.consumed':True},None,False,'challenge_replayed','one-time challenge must not replay'),
++ ('challenge-state-missing', None,{'issued_challenge.consumed':'__REMOVE__'},None,False,'challenge_state_unverified','an absent consumption flag is not evidence of non-use'),
++ ('challenge-state-null', None,{'issued_challenge.consumed':None},None,False,'challenge_state_unverified','unknown consumption state cannot earn credit'),
++ ('challenge-state-text', None,{'issued_challenge.consumed':'not-checked'},None,False,'challenge_state_unverified','textual claim cannot replace an explicit unused state'),
++ ('wrong-challenge-key',None,{'issued_challenge.agent_public_key':pub(key('other-agent'))},None,False,'challenge_key_mismatch','challenge binds agent key'),
++ ('forged-agent-signature',None,None,{'agent_signature':b64(b'\x00'*64)},False,'agent_proof_invalid','no agent signing key possession'),
++ ('tampered-committed-digest',None,None,{'registry_receipt.body.record_digest':'sha256:'+'0'*64},False,'durable_receipt_binding_mismatch','receipt must bind exact claimed payload'),
++ ('forged-registry-receipt',None,None,{'registry_receipt.signature':b64(b'\x00'*64)},False,'durable_receipt_signature_invalid','registry authority must sign receipt'),
++ ('missing-registry-receipt',None,None,{'registry_receipt':None},False,'malformed_or_missing_evidence','asserted durable status alone not sufficient'),
++]
++
++def materialize():
++    manifest={'suite':'synthetic-agent-registration-classification/v1','status':'candidate-not-accepted-upstream',
++      'normativeScope':'BuddyLists policy proposal; MCP has no general agent registration rule',
++      'counts':{'registration_credit':sum(e[4] for e in CASES),'no_registration_credit':sum(not e[4] for e in CASES)},
++      'vectors':[]}
++    outputs={}
++    for name,cchange,ctxchange,rchange,expected,reason,note in CASES:
++        _,record,context=make(name,cchange,ctxchange,rchange)
++        for fn,obj in [('record.json',record),('context.json',context)]:
++            path=f'cases/{name}/{fn}'
++            contents=js(obj)
++            outputs[path]=contents
++        manifest['vectors'].append({'id':name,'path':'cases/'+name,'expected':{'registration_credit':expected,'reason':reason},
++            'difference_from_positive_control':note,
++            'files':{fn:hashlib.sha256(outputs[f'cases/{name}/{fn}']).hexdigest() for fn in ('record.json','context.json')}})
++    manifest['corpusDigest']=hashlib.sha256(b''.join(outputs[k] for k in sorted(outputs))).hexdigest()
++    outputs['MANIFEST.json']=js(manifest)
++    lines=['# Test vector index','','| ID | Registration credit | Reason |','|---|---|---|']
++    for v in manifest['vectors']:lines.append(f"| {v['id']} | {str(v['expected']['registration_credit']).lower()} | {v['expected']['reason']} |")
++    outputs['INDEX.md']=('\n'.join(lines)+'\n').encode()
++    return outputs
++
++def main():
++    ap=argparse.ArgumentParser();ap.add_argument('--check',action='store_true');args=ap.parse_args()
++    outputs=materialize(); bad=[]
++    for name,b in outputs.items():
++        path=ROOT/name
++        if args.check:
++            if not path.exists() or path.read_bytes()!=b:bad.append(name)
++        else:
++            path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(b)
++    if args.check and bad:
++        raise SystemExit('Generator mismatch: '+', '.join(bad))
++    print(('GENERATOR_CHECK_PASS' if args.check else 'GENERATED')+' '+str(len(CASES))+' synthetic vector cases')
++if __name__=='__main__':main()
